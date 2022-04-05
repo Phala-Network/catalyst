@@ -9,7 +9,6 @@ export type DeploymentPointerChanges = {
   entityType: EntityType
   entityId: EntityId
   localTimestamp: Timestamp
-  changes: PointerChanges
   authChain: AuthChain
 }
 

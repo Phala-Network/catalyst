@@ -1,10 +1,7 @@
-import { EntityId, Pointer } from 'dcl-catalyst-commons'
-import { getPointerChangesForDeployments } from '../../logic/database-queries/deployment-deltas-queries'
 import { getHistoricalDeployments } from '../../logic/database-queries/deployments-queries'
 import { AppComponents } from '../../types'
 import { PointerChangesOptions } from '../deployments/types'
-import { DELTA_POINTER_RESULT } from '../pointers/PointerManager'
-import { DeploymentPointerChanges, PartialDeploymentPointerChanges, PointerChanges } from './types'
+import { DeploymentPointerChanges, PartialDeploymentPointerChanges } from './types'
 
 const MAX_HISTORY_LIMIT = 500
 
@@ -28,19 +25,10 @@ export async function getPointerChanges(
 
   const moreData = deploymentsWithExtra.length > curatedLimit
 
-  const deployments = deploymentsWithExtra.slice(0, curatedLimit)
-  const deploymentIds = deployments.map(({ deploymentId }) => deploymentId)
-  const deltasForDeployments = await getPointerChangesForDeployments(components, deploymentIds)
-  const pointerChanges: DeploymentPointerChanges[] = deployments.map(
-    ({ deploymentId, entityId, entityType, localTimestamp, authChain }) => {
-      const delta = deltasForDeployments.get(deploymentId) ?? new Map()
-      const changes = transformPointerChanges(entityId, delta)
-      return { entityType, entityId, localTimestamp, changes, authChain }
-    }
-  )
+  const deployments: DeploymentPointerChanges[] = deploymentsWithExtra.slice(0, curatedLimit)
 
   return {
-    pointerChanges,
+    pointerChanges: deployments,
     filters: {
       ...options?.filters
     },
@@ -50,17 +38,4 @@ export async function getPointerChanges(
       moreData
     }
   }
-}
-
-function transformPointerChanges(
-  deployedEntity: EntityId,
-  input: Map<Pointer, { before: EntityId | undefined; after: DELTA_POINTER_RESULT }>
-): PointerChanges {
-  const newEntries = Array.from(input.entries()).map<
-    [Pointer, { before: EntityId | undefined; after: EntityId | undefined }]
-  >(([pointer, { before, after }]) => [
-    pointer,
-    { before, after: after === DELTA_POINTER_RESULT.SET ? deployedEntity : undefined }
-  ])
-  return new Map(newEntries)
 }

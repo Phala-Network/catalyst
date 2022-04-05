@@ -391,8 +391,7 @@ export class Controller {
       })
     )
     const controllerPointerChanges: ControllerPointerChanges[] = deltas.map((delta) => ({
-      ...delta,
-      changes: Array.from(delta.changes.entries()).map(([pointer, { before, after }]) => ({ pointer, before, after }))
+      ...delta
     }))
 
     if (controllerPointerChanges.length > 0 && pagination.moreData) {
@@ -698,13 +697,7 @@ export enum DeploymentField {
   AUDIT_INFO = 'auditInfo'
 }
 
-export type ControllerPointerChanges = Omit<DeploymentPointerChanges, 'changes'> & {
-  changes: {
-    pointer: Pointer
-    before: EntityId | undefined
-    after: EntityId | undefined
-  }[]
-}
+export type ControllerPointerChanges = Omit<DeploymentPointerChanges, 'changes'>
 
 export type ControllerDenylistData = {
   target: {
