@@ -1,8 +1,6 @@
 import { DeploymentFilters, EntityId, EntityType, Pointer, Timestamp } from 'dcl-catalyst-commons'
 import { AuthChain } from 'dcl-crypto'
 
-export type PointerChanges = Map<Pointer, { before: EntityId | undefined; after: EntityId | undefined }>
-
 export type PointerChangesFilters = Pick<DeploymentFilters, 'from' | 'to' | 'entityTypes'>
 
 export type DeploymentPointerChanges = {
@@ -10,6 +8,7 @@ export type DeploymentPointerChanges = {
   entityId: EntityId
   localTimestamp: Timestamp
   authChain: AuthChain
+  pointers: Pointer[]
 }
 
 export type PartialDeploymentPointerChanges = {

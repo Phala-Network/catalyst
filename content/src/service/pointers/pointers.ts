@@ -25,10 +25,17 @@ export async function getPointerChanges(
 
   const moreData = deploymentsWithExtra.length > curatedLimit
 
-  const deployments: DeploymentPointerChanges[] = deploymentsWithExtra.slice(0, curatedLimit)
+  const deployments = deploymentsWithExtra.slice(0, curatedLimit)
+
+  // TODO: Check if this is really necessary
+  const pointerChanges: DeploymentPointerChanges[] = deployments.map(
+    ({ entityId, entityType, localTimestamp, pointers, authChain }) => {
+      return { entityId, entityType, localTimestamp, pointers, authChain }
+    }
+  )
 
   return {
-    pointerChanges: deployments,
+    pointerChanges,
     filters: {
       ...options?.filters
     },
