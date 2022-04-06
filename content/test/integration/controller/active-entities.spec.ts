@@ -8,6 +8,20 @@ import { buildDeployData } from '../E2ETestUtils'
 import { TestProgram } from '../TestProgram'
 
 loadStandaloneTestEnvironment()('Integration - Get Active Entities', (testEnv) => {
+
+  it('when asking without params, it returns client error', async () => {
+    const server = await testEnv.configServer().withConfig(EnvironmentConfig.DISABLE_SYNCHRONIZATION, true).andBuild()
+    makeNoopValidator(server.components)
+    await server.startProgram()
+
+    const result = await fetch(server.getUrl() + `/entities/active`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+    expect(result.status).toBe(400)
+  })
+
   it('when asking by ID, it returns active entities with given ID', async () => {
     const server = await testEnv.configServer().withConfig(EnvironmentConfig.DISABLE_SYNCHRONIZATION, true).andBuild()
 
@@ -442,10 +456,8 @@ loadStandaloneTestEnvironment()('Integration - Get Active Entities', (testEnv) =
    })
 
   async function fetchActiveEntityByIds(server: TestProgram, ...ids: string[]): Promise<Entity[]> {
-    const url = server.getUrl() + `/entities/active`
-
     return (
-      await fetch(url, {
+      await fetch(`${server.getUrl()}/entities/active`, {
         method: 'POST',
         body: JSON.stringify({ ids }),
         headers: { 'Content-Type': 'application/json' }
@@ -454,10 +466,8 @@ loadStandaloneTestEnvironment()('Integration - Get Active Entities', (testEnv) =
   }
 
   async function fetchActiveEntityByPointers(server: TestProgram, ...pointers: string[]): Promise<Entity[]> {
-    const url = server.getUrl() + `/entities/active`
-
     return (
-      await fetch(url, {
+      await fetch(`${server.getUrl()}/entities/active`, {
         method: 'POST',
         body: JSON.stringify({ pointers }),
         headers: { 'Content-Type': 'application/json' }
@@ -467,10 +477,8 @@ loadStandaloneTestEnvironment()('Integration - Get Active Entities', (testEnv) =
 
 
   async function fetchActiveEntityByUrnPrefix(server: TestProgram, urnPrefix: string): Promise<{ pointer: Pointer; entityId: EntityId }[]> {
-    const url = server.getUrl() + `/entities/currently-pointed/${urnPrefix}`
-
     return (
-      await fetch(url, {
+      await fetch(`${server.getUrl()}/entities/currently-pointed/${urnPrefix}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       })
