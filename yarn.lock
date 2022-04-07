@@ -341,10 +341,10 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@dcl/catalyst-api-specs@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@dcl/catalyst-api-specs/-/catalyst-api-specs-1.2.0.tgz#08f68767816bd186a8dd7b108210a5f473fc28b4"
-  integrity sha512-lJmxsPRJW86e6LMKUYMUarr1uva/1+umq1FYI3k1TrSYBVKk0B08AvY3YpJDxN9PVrxEhIQG6DXhWxO+o6FS4A==
+"@dcl/catalyst-api-specs@tag-test-new-pointer-changes-2":
+  version "1.2.1-20220407221134.commit-c6e701a"
+  resolved "https://registry.yarnpkg.com/@dcl/catalyst-api-specs/-/catalyst-api-specs-1.2.1-20220407221134.commit-c6e701a.tgz#b0c61cc72bf1aa56e0617a29c50c39c7653d404b"
+  integrity sha512-YVahfB9m0GtQDmsVj/B4lJkKXqdgPEb3BrJneRbtvsXRN/YngMwaSiQy2E/95zPdHabwv7Yg83vu2uR109lV5A==
   dependencies:
     yaml "1.10.2"
 
