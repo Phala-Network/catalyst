@@ -1,6 +1,7 @@
 # Catalyst Project
 
 A Catalyst is a server that runs different services. These services currently work as the backbone for Decentraland.
+
 If you just want to run a Catalyst server, please check the [Catalyst Owner](https://github.com/decentraland/catalyst-owner) repository. This repository is mostly used for developing.
 
 The architecture of the server is as follows:
