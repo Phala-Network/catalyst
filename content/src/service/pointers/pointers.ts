@@ -1,4 +1,4 @@
-import { getHistoricalDeployments } from '../../logic/database-queries/deployments-queries'
+import { getHistoricalDeployments, HistoricalDeployment } from '../../logic/database-queries/deployments-queries'
 import { AppComponents } from '../../types'
 import { PointerChangesOptions } from '../deployments/types'
 import { DeploymentPointerChanges, PartialDeploymentPointerChanges } from './types'
@@ -12,7 +12,7 @@ export async function getPointerChanges(
   const curatedOffset = options?.offset && options?.offset >= 0 ? options?.offset : 0
   const curatedLimit =
     options?.limit && options?.limit > 0 && options?.limit <= MAX_HISTORY_LIMIT ? options?.limit : MAX_HISTORY_LIMIT
-  let deploymentsWithExtra = await getHistoricalDeployments(
+  let deploymentsWithExtra: HistoricalDeployment[] = await getHistoricalDeployments(
     components,
     curatedOffset,
     curatedLimit + 1,
@@ -22,12 +22,9 @@ export async function getPointerChanges(
   )
 
   deploymentsWithExtra = deploymentsWithExtra.filter((result) => !components.denylist.isDenylisted(result.entityId))
+  const moreData: boolean = deploymentsWithExtra.length > curatedLimit
+  const deployments: HistoricalDeployment[] = deploymentsWithExtra.slice(0, curatedLimit)
 
-  const moreData = deploymentsWithExtra.length > curatedLimit
-
-  const deployments = deploymentsWithExtra.slice(0, curatedLimit)
-
-  // TODO: Check if this is really necessary
   const pointerChanges: DeploymentPointerChanges[] = deployments.map(
     ({ entityId, entityType, localTimestamp, pointers, authChain }) => {
       return { entityId, entityType, localTimestamp, pointers, authChain }
