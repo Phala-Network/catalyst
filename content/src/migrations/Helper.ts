@@ -64,19 +64,11 @@ async function considerDeploymentsOnPointerAsFailed(pgm: MigrationBuilder, entit
       ON CONFLICT ON CONSTRAINT failed_deployments_uniq_entity_id_entity_type
       DO UPDATE SET failure_timestamp = to_timestamp(${now} / 1000.0), reason = '${reason}', error_description = '${description}'`)
 
-    // Clear dependency on deployment_deltas table
-    const { rows } = await pgm.db.query(`SELECT deployment FROM deployment_deltas WHERE before=${row.id}`)
-    const deployment = rows[0]?.deployment
-    if (deployment) {
-      await pgm.db.query(`UPDATE deployment_deltas SET before=NULL WHERE deployment=${deployment}`)
-    }
-
     // Delete from all tables
     await pgm.db.query(`DELETE FROM last_deployed_pointers WHERE deployment=${row.id}`)
     await pgm.db.query(`DELETE FROM pointer_history WHERE deployment=${row.id}`)
     await pgm.db.query(`DELETE FROM content_files WHERE deployment=${row.id}`)
     await pgm.db.query(`DELETE FROM migration_data WHERE deployment=${row.id}`)
-    await pgm.db.query(`DELETE FROM deployment_deltas WHERE deployment=${row.id}`)
     await pgm.db.query(`DELETE FROM deployments WHERE id=${row.id}`)
   }
 }
