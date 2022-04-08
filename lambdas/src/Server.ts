@@ -1,5 +1,4 @@
 import { LAMBDAS_API } from '@dcl/catalyst-api-specs'
-import { initializeMetricsServer } from '@dcl/catalyst-node-commons'
 import compression from 'compression'
 import cors from 'cors'
 import express from 'express'
@@ -20,7 +19,6 @@ import { WearablesOwnership } from './apis/profiles/WearablesOwnership'
 import statusRouter from './apis/status/routes'
 import { initializeThirdPartyIntegrationsRoutes } from './apis/third-party/routes'
 import { Bean, Environment, EnvironmentConfig } from './Environment'
-import { metricsComponent } from './metrics'
 import { SmartContentClient } from './utils/SmartContentClient'
 import { SmartContentServerFetcher } from './utils/SmartContentServerFetcher'
 import { TheGraphClient } from './utils/TheGraphClient'
@@ -28,7 +26,7 @@ export class Server {
   private port: number
   private app: express.Express
   private httpServer: http.Server
-  private metricsPort: ReturnType<typeof initializeMetricsServer>
+  // private metricsPort: ReturnType<typeof initializeMetricsServer>
 
   constructor(env: Environment) {
     // Set logger
@@ -67,7 +65,7 @@ export class Server {
       this.app.use(morgan('combined'))
     }
 
-    this.metricsPort = initializeMetricsServer(this.app, metricsComponent)
+    // this.metricsPort = initializeMetricsServer(this.app, metricsComponent)
 
     const ensOwnership: EnsOwnership = env.getBean(Bean.ENS_OWNERSHIP)
     const wearablesOwnership: WearablesOwnership = env.getBean(Bean.WEARABLES_OWNERSHIP)
@@ -129,7 +127,7 @@ export class Server {
     this.httpServer = this.app.listen(this.port, () => {
       console.info(`==> Lambdas Server listening on port ${this.port}.`)
     })
-    await this.metricsPort.start()
+    // await this.metricsPort.start()
   }
 
   async stop(): Promise<void> {
@@ -138,8 +136,8 @@ export class Server {
         console.info(`==> Lambdas Server stopped.`)
       })
     }
-    if (this.metricsPort) {
-      await this.metricsPort.stop()
-    }
+    // if (this.metricsPort) {
+    //   await this.metricsPort.stop()
+    // }
   }
 }
